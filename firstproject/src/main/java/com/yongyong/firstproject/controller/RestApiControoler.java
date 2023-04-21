@@ -1,5 +1,8 @@
 package com.yongyong.firstproject.controller;
 
+import javax.validation.Valid;
+
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -7,11 +10,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.yongyong.firstproject.dto.request.ExampleDto;
+import com.yongyong.firstproject.dto.response.ExampleResponseDto;
 
 class ParamDto {
     private String data1;
@@ -112,6 +119,24 @@ public class RestApiControoler {
             // @ResquestBody String data 문자열 받을 때
             @ResquestBody ParamDto dto) {
         return ResponseEntity.status(408).body(dto);
+    }
+
+    @PostMapping("lombok")
+    public ExampleResponseDto lombok(
+            @Valid @RequestBody ExampleDto requestBody) {
+
+        String data1 = requestBody.getParameter1();
+        String data2 = requestBody.getParameter2();
+        String data3 = requestBody.getParameter3();
+
+        // ExampleResponseDto responseData =
+        // new ExampleResponseDto(data1,data2,data3); // 기본생성자가 없다.
+
+        ExampleResponseDto responseData = ExampleResponseDto.builder().data1(data1).build();
+
+        System.out.println(responseData.toString());
+
+        return responseData;
     }
 
 }
