@@ -2,10 +2,7 @@ package com.yongyong.firstproject.controller;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,13 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yongyong.firstproject.dto.request.ExampleDto;
 import com.yongyong.firstproject.dto.response.ExampleResponseDto;
 import com.yongyong.firstproject.service.RestApiService;
-import com.yongyong.firstproject.service.implement.RestApiServiceImplement;
 
 class ParamDto {
     private String data1;
@@ -57,7 +52,7 @@ class ParamDto {
 @RequestMapping("api")
 public class RestApiController {
 
-    private RestApiService restApiService = new RestApiServiceImplement();
+    private RestApiService restApiService;
 
     public RestApiController(RestApiService restApiService) {
         this.restApiService = restApiService;
@@ -73,7 +68,7 @@ public class RestApiController {
     // @RequestMapping(method=RequstMethod.GET, value="get-method")
     @GetMapping("get-method")
     public String getMethod() {
-        return restApiService.getMetod();
+        return restApiService.getMethod();
     }
 
     // Post Method @PostMapping
@@ -81,7 +76,7 @@ public class RestApiController {
     // @RequestMapping(method=RequestMethod.POST, value="post-method")
     @PostMapping("post-method") // 리소스는 존재하고 Post로만 인지하게 해놨음
     public String postMethod() {
-        return restApiService.postMetod();
+        return restApiService.postMethod();
     }
 
     // Patch Method @PathchMapping
