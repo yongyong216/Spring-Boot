@@ -24,7 +24,7 @@ public class GetBoardResponseDto extends ResponseDto {
     private String boardWriterNickname;
     private String boardWriterProfileImageUrl;
     private List<Comment> commentList;
-    private List<Liky> likyList;
+    private List<Liky> likeList;
 
 }
 

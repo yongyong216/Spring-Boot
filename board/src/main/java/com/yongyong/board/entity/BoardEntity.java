@@ -1,10 +1,15 @@
 package com.yongyong.board.entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.yongyong.board.dto.request.board.PostBoardRequestDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,5 +31,19 @@ public class BoardEntity {
     private String boardImageUrl;
     private String writeDatetime;
     private int viewCount;
+
+    public BoardEntity(PostBoardRequestDto dto) {
+
+        Date now = new Date();
+        SimpleDateFormat SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String writeDatetime = SimpleDateFormat.format(now);
+
+        this.weiterEmail = dto.getBoardWriterEmail();
+        this.title = dto.getBoardTitle();
+        this.content = dto.getBoardContent();
+        this.boardImageUrl = dto.getBoardImageUrl();
+        this.writeDatetime = writeDatetime;
+        this.viewCount = 0;
+    }
 
 }

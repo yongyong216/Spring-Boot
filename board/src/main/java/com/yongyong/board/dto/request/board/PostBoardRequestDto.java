@@ -17,4 +17,5 @@ public class PostBoardRequestDto {
     @NotBlank
     private String boardContent;
     private String boardImageUrl;
+
 }
