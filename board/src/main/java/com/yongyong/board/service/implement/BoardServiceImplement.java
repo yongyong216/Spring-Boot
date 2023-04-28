@@ -1,15 +1,23 @@
 package com.yongyong.board.service.implement;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.yongyong.board.common.util.CustomResponse;
 import com.yongyong.board.dto.request.board.PatchBoardRequestDto;
 import com.yongyong.board.dto.request.board.PostBoardRequestDto;
 import com.yongyong.board.dto.response.ResponseDto;
 import com.yongyong.board.entity.BoardEntity;
+import com.yongyong.board.entity.CommentEntity;
+import com.yongyong.board.entity.LikyEntity;
+import com.yongyong.board.entity.UserEntity;
 import com.yongyong.board.repository.BoardRepository;
+import com.yongyong.board.repository.CommentRepository;
+import com.yongyong.board.repository.LikyRepository;
 import com.yongyong.board.repository.UserRepository;
 import com.yongyong.board.service.BoardService;
 import com.yongyong.board.dto.response.board.GetBoardListResponseDto;
@@ -17,15 +25,23 @@ import com.yongyong.board.dto.response.board.GetBoardResponseDto;
 
 @Service
 public class BoardServiceImplement implements BoardService {
+
     private UserRepository userRepository;
     private BoardRepository boardRepository;
+    private CommentRepository commentRepository;
+    private LikyRepository likyRepository;
 
     @Autowired
     public BoardServiceImplement(
             UserRepository userRepository,
-            BoardRepository boardRepository) {
+            BoardRepository boardRepository,
+            CommentRepository commentRepository,
+            LikyRepository likyRepository) {
         this.userRepository = userRepository;
         this.boardRepository = boardRepository;
+        this.commentRepository = commentRepository;
+        this.likyRepository = likyRepository;
+
     }
 
     @Override
@@ -63,7 +79,34 @@ public class BoardServiceImplement implements BoardService {
     // 실패하면 code, message 형태인 조상클래스의 반환타입으로 반환될것이다.
     public ResponseEntity<? super GetBoardResponseDto> getBoard(Integer boardNumber) {
 
-        throw new UnsupportedOperationException("Unimplemented method 'getBoard'");
+        GetBoardResponseDto body = null;
+
+        try {
+
+            if (boardNumber == null)
+                return CustomResponse.vaildationFaild();
+
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return CustomResponse.notExistBoardNumber();
+
+            int viewCount = boardEntity.getViewCount();
+            boardEntity.setViewCount(++viewCount);
+            boardRepository.save(boardEntity);
+
+            String boardWriterEmail = boardEntity.getWriterEmail();
+            UserEntity userEntity = userRepository.findByEmail(boardWriterEmail);
+            List<CommentEntity> commentEntities = commentRepository.findByBoardNumber(boardNumber);
+            List<LikyEntity> likyEntities = likyRepository.findByBoardNumber(boardNumber);
+
+            body = new GetBoardResponseDto(boardEntity, userEntity, commentEntities, likyEntities);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     @Override
@@ -80,6 +123,41 @@ public class BoardServiceImplement implements BoardService {
 
     @Override
     public ResponseEntity<ResponseDto> patchBoard(PatchBoardRequestDto dto) {
+
+        int boardNumber = dto.getBoardNumber();
+        String userEmail = dto.getUserEmail();
+        String boardTitle = dto.getBoardTitle();
+        String boardContent = dto.getBoardContent();
+        String boardImageUrl = dto.getBoardImageUrl();
+
+        try {
+
+            // TODO: 존재하지 않는 게시물 번호 반환
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return CustomResponse.notExistBoardNumber();
+
+            // TODO: 존재하지 않는 유저 이메일 반환
+            boolean existedUserEmail = userRepository.existsByEmail(userEmail);
+            if (!existedUserEmail)
+                return CustomResponse.notExistUserEmail();
+
+            // TODO: 권한 없음
+            boolean equalsWriter = boardEntity.getWriterEmail().equals(userEmail);
+            if (!equalsWriter)
+                return CustomResponse.notPermissions();
+
+            boardEntity.setTitle(boardTitle);
+            boardEntity.setContent(boardContent);
+            boardEntity.setBoardImageUrl(boardImageUrl);
+
+            boardRepository.save(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+
+        }
 
         throw new UnsupportedOperationException("Unimplemented method 'patchBoard'");
     }

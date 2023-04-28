@@ -25,7 +25,7 @@ public class BoardEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 값을 자동으로 생성
     private int boardNumber;
-    private String weiterEmail;
+    private String writerEmail;
     private String title;
     private String content;
     private String boardImageUrl;
@@ -38,7 +38,7 @@ public class BoardEntity {
         SimpleDateFormat SimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         String writeDatetime = SimpleDateFormat.format(now);
 
-        this.weiterEmail = dto.getBoardWriterEmail();
+        this.writerEmail = dto.getBoardWriterEmail();
         this.title = dto.getBoardTitle();
         this.content = dto.getBoardContent();
         this.boardImageUrl = dto.getBoardImageUrl();
