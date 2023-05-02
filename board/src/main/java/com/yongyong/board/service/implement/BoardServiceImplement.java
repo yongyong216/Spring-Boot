@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.StreamingHttpOutputMessage.Body;
 import org.springframework.stereotype.Service;
 
 import com.yongyong.board.common.util.CustomResponse;
@@ -15,11 +16,15 @@ import com.yongyong.board.entity.BoardEntity;
 import com.yongyong.board.entity.CommentEntity;
 import com.yongyong.board.entity.LikyEntity;
 import com.yongyong.board.entity.UserEntity;
+import com.yongyong.board.entity.resultSet.BoardListResultSet;
 import com.yongyong.board.repository.BoardRepository;
 import com.yongyong.board.repository.CommentRepository;
 import com.yongyong.board.repository.LikyRepository;
 import com.yongyong.board.repository.UserRepository;
 import com.yongyong.board.service.BoardService;
+
+import net.bytebuddy.asm.Advice.Return;
+
 import com.yongyong.board.dto.response.board.GetBoardListResponseDto;
 import com.yongyong.board.dto.response.board.GetBoardResponseDto;
 
@@ -112,13 +117,37 @@ public class BoardServiceImplement implements BoardService {
     @Override
     public ResponseEntity<? super GetBoardListResponseDto> getBoardList() {
 
-        throw new UnsupportedOperationException("Unimplemented method 'getBoardList'");
+        GetBoardListResponseDto body = null;
+
+        try {
+
+            List<BoardListResultSet> resultSet = boardRepository.getList();
+            body = new GetBoardListResponseDto(resultSet);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
+
     }
 
     @Override
     public ResponseEntity<? super GetBoardListResponseDto> getBoardTop3() {
+        GetBoardListResponseDto body = null;
 
-        throw new UnsupportedOperationException("Unimplemented method 'getBoardTop3'");
+        try {
+
+            List<BoardListResultSet> resultSet = boardRepository.getTop3List();
+            body = new GetBoardListResponseDto(resultSet);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(body);
     }
 
     @Override
@@ -165,7 +194,40 @@ public class BoardServiceImplement implements BoardService {
     @Override
     public ResponseEntity<ResponseDto> deleteBoard(String userEmail, Integer boardNumber) {
 
-        throw new UnsupportedOperationException("Unimplemented method 'deleteBoard'");
+        ResponseDto body = null;
+
+        try {
+            if (boardNumber == null)
+                return CustomResponse.vaildationFaild();
+
+            // TODO: 존재하지 않는 게시물 번호 반환
+            BoardEntity boardEntity = boardRepository.findByBoardNumber(boardNumber);
+            if (boardEntity == null)
+                return CustomResponse.notExistBoardNumber();
+
+            // TODO: 존재하지 않는 유저 이메일 반환
+            boolean existedUserEmail = userRepository.existsByEmail(userEmail);
+            if (!existedUserEmail)
+                return CustomResponse.notExistUserEmail();
+
+            // TODO: 권한 없음 반환
+            boolean equalWriter = boardEntity.getWriterEmail().equals(userEmail);
+            if (!equalWriter)
+                return CustomResponse.notPermissions();
+
+            commentRepository.deleteByBoardNumber(boardNumber);
+            likyRepository.deleteByBoardNumber(boardNumber);
+
+            boardRepository.delete(boardEntity);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return CustomResponse.databaseError();
+
+        }
+
+        return CustomResponse.success();
+
     }
 
 }
