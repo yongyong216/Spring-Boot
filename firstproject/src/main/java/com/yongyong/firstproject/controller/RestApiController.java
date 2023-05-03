@@ -3,6 +3,7 @@ package com.yongyong.firstproject.controller;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -67,7 +68,9 @@ public class RestApiController {
     // GET Method : 클라이언트가 서버에게 데이터를 받기위한 요청의 Method
     // @RequestMapping(method=RequstMethod.GET, value="get-method")
     @GetMapping("get-method")
-    public String getMethod() {
+    public String getMethod(
+            @AuthenticationPrincipal String subject) {
+
         return restApiService.getMethod();
     }
 
@@ -121,7 +124,7 @@ public class RestApiController {
     @PostMapping("request-body")
     public ResponseEntity<ParamDto> requestBody(
             // @ResquestBody String data 문자열 받을 때
-            @ResquestBody ParamDto dto) {
+            @RequestBody ParamDto dto) {
         return ResponseEntity.status(408).body(dto);
     }
 
