@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.yongyong.board.dto.request.PostUserRequestDto;
+import com.yongyong.board.dto.request.user.PostUserRequestDto;
 import com.yongyong.board.dto.response.ResponseDto;
 import com.yongyong.board.service.UserService;
 

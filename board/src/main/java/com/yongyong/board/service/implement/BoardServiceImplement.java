@@ -174,7 +174,7 @@ public class BoardServiceImplement implements BoardService {
             // TODO: 권한 없음
             boolean equalsWriter = boardEntity.getWriterEmail().equals(userEmail);
             if (!equalsWriter)
-                return CustomResponse.notPermissions();
+                return CustomResponse.noPermissions();
 
             boardEntity.setTitle(boardTitle);
             boardEntity.setContent(boardContent);
@@ -213,7 +213,7 @@ public class BoardServiceImplement implements BoardService {
             // TODO: 권한 없음 반환
             boolean equalWriter = boardEntity.getWriterEmail().equals(userEmail);
             if (!equalWriter)
-                return CustomResponse.notPermissions();
+                return CustomResponse.noPermissions();
 
             commentRepository.deleteByBoardNumber(boardNumber);
             likyRepository.deleteByBoardNumber(boardNumber);

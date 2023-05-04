@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.yongyong.board.dto.request.PostUserRequestDto;
+import com.yongyong.board.dto.request.user.PostUserRequestDto;
 import com.yongyong.board.dto.response.ResponseDto;
 import com.yongyong.board.entity.UserEntity;
 import com.yongyong.board.repository.UserRepository;
