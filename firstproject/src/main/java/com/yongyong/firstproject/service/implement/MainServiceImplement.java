@@ -3,6 +3,7 @@ package com.yongyong.firstproject.service.implement;
 import org.springframework.stereotype.Service;
 
 import com.yongyong.firstproject.provider.JwtTokenProvider;
+import com.yongyong.firstproject.provider.UserRole;
 import com.yongyong.firstproject.service.MainService;
 
 @Service
@@ -26,8 +27,8 @@ public class MainServiceImplement implements MainService {
     }
 
     @Override
-    public String validJwt(String jwt) {
-        String subject = jwtTokenProvider.validate(jwt);
+    public UserRole validJwt(String jwt) {
+        UserRole subject = jwtTokenProvider.validate(jwt);
         return subject;
     }
 

@@ -24,26 +24,34 @@ public class JwtTokenProvider {
     public String creat(String subject) {
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); // 만료시간
         // 현재시간 + 1시간
+        String id = "qwer";
+        int role = 1;
 
         String jwt = Jwts.builder()
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .setExpiration(expiredDate)
+                // .setSubject(subject)
+                // .setIssuedAt(new Date())
+                // .setExpiration(expiredDate)
+                .claim("id", id)
+                .claim("role", role)
                 .compact();
+        return jwt;
         // SignatureAlgorithm.HS256 암호화
         // setSubject(subject) 값 지정
         // setIssuedAt(new Date()) 생성시간
         // setExpiration(expiredDate).compact(); 만료시간
-        return jwt;
+
     }
 
-    // 받은 jwt를 증명할 수 있는지에 대해 검증해주는 Method
-    public String validate(String jwt) { // jwt 를 받아서
-        Claims claims = Jwts.parser().setSigningKey(SECRET_KEY)
-                .parseClaimsJws(jwt).getBody(); // claim으로 바꿔주고 body를 가져옴
-
-        return claims.getSubject();
+    // JWT 검증
+    public UserRole validate(String jwt) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(jwt)
+                .getBody();
+        String id = (String) claims.get("id");
+        int role = (Integer) claims.get("role");
+        System.out.println(id + " " + role);
+        return new UserRole(id, role);
     }
-
 }

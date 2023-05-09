@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.yongyong.firstproject.provider.JwtTokenProvider;
+import com.yongyong.firstproject.provider.UserRole;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -43,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String subject = jwtTokenProvider.validate(jwt);
+            UserRole subject = jwtTokenProvider.validate(jwt);
 
             AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(subject, null,
                     AuthorityUtils.NO_AUTHORITIES);
