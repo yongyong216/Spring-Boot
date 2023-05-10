@@ -17,7 +17,7 @@ public class Samplejob implements Job {
     // 실제 작업이 실행될 메서드
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("Scheduler!!");
+        // System.out.println("Scheduler!!");
 
     }
 
