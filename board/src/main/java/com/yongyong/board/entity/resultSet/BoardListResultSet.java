@@ -1,7 +1,5 @@
 package com.yongyong.board.entity.resultSet;
 
-import java.security.PublicKey;
-
 public interface BoardListResultSet {
     public int getBoardNumber();
 

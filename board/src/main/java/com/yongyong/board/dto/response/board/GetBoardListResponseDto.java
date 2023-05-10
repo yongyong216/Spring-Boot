@@ -25,7 +25,7 @@ public class GetBoardListResponseDto extends ResponseDto {
 
         for (BoardListResultSet result : resultSet) {
             BoardSummary boardSummary = new BoardSummary(result);
-
+            boardList.add(boardSummary);
         }
         this.boardList = boardList;
 
